@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Test</title>
+    </head>
+
+    <body>
+
+        <header>
+            <div class="">
+                <img id="previewLogo" alt="PREVIEW-Logo" width="150px" /> 
+            </div>
+            <div class="">
+                navigation
+            </div>
+        </header>
+
+        <main>
+            <section>
+                <form class="">
+                    <input id="sentimentSentence" type="text" name="input" value="" placeholder="Please enter a sentence to be reviewed ...">
+                    <input type="submit" name="" value="submit" id="sentimentFormSubmit">
+                </form>
+            </section>
+
+            <section>
+                <span class="outputHeader">Form Results from the source:</span>
+                <div id="results">
+                    <div>
+                        <span class="outputPreset">Input Sentence: </span>
+                        <span id="sentenceOutput"></span>
+                    </div>
+                    <div>
+                        <span class="outputPreset">Agreement: </span>
+                        <span id="sentenceAgreement"></span>
+                    </div>
+                    <div>
+                        <span class="outputPreset">Subjectivity: </span>
+                        <span id="sentenceSubjectivity"></span>
+                    </div>
+                    <div>
+                        <span class="outputPreset">Confidence: </span>
+                        <span id="sentenceConfidence"></span>
+                    </div>
+                    <div>
+                        <span class="outputPreset">Irony: </span>
+                        <span id="sentenceIrony"></span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>This is a footer</p>
+        </footer>
+
+        <!-- comment out script-block if IE11 compatibilty is required -->
+        <script>
+            // Check that service workers are supported
+            if ('serviceWorker' in navigator) {
+                // Use the window load event to keep the page load performant
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js');
+                });
+            }
+        </script>
+
+    </body>
+</html>

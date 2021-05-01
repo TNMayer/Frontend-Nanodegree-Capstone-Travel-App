@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = {
@@ -37,7 +38,7 @@ module.exports = {
 
             const getSentimentApiData = async (inputData) => {
 
-                let key = "8fea75fbf1a4e6d2bb0404...";
+                let key = "8fea75fbf1a4e6d2bb0404e8c79843b0";
                 let format = 'txt';
                 const fetchUrl = `https://api.meaningcloud.com/sentiment-2.1?key=${key}&${format}=${inputData}&model=general&lang=en`
                 console.log(fetchUrl);
@@ -70,7 +71,7 @@ module.exports = {
             });
         },
         compress: true,
-        port: 4000,
+        port: 3330,
     },
     target: ['web', 'es5'],
     module: {
@@ -119,6 +120,7 @@ module.exports = {
             cleanStaleWebpackAssets: true,
             protectWebpackAssets: false
         }),
+        // new MiniCssExtractPlugin(),
         // new WorkboxPlugin.GenerateSW()
     ],
     performance: {

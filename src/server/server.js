@@ -4,7 +4,8 @@ var path = require('path');
 const express = require('express');
 const mockAPIResponse = require('./mockAPI.js');
 const fetch = require('node-fetch');
-const port = 4000;
+const {sentimentApiKey, geoNamesUserName, weatherbitKey, pixabayKey} = require('./apiData.js');
+const port = 6000;
 
 const app = express();
 
@@ -38,7 +39,7 @@ app.get('/test', function (req, res) {
 // POST Routes
 const getSentimentApiData = async (inputData) => {
 
-    let key = "8fea75fbf1a4e6d2bb0404e8...";
+    let key = sentimentApiKey();
     let format = 'txt';
     const fetchUrl = `https://api.meaningcloud.com/sentiment-2.1?key=${key}&${format}=${inputData}&model=general&lang=en`
     console.log(fetchUrl);

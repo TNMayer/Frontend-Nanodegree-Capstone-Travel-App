@@ -1,7 +1,12 @@
-form {
+#testForm {
     border: 1px solid #545454;
     border-radius: 3px;
     padding: 40px;
+}
+
+.formHints {
+    font-weight: bold;
+    font-size: 0.8em;
 }
 
 input {
@@ -9,4 +14,31 @@ input {
     width: 100%;
     line-height: 16px;
     margin: 10px 0;
+}
+
+#inputForm {
+    padding: 10px 40px;
+    background-color: #eee;
+    border: 1px solid black;
+}
+
+#inputForm_date_from {
+    display: inline-block;
+    width: 49.5%;
+}
+
+#inputForm_date_to {
+    display: inline-block;
+    width: 49.5%;
+}
+
+#inputForm_submit {
+    border-radius: 8px;
+    font-weight: bold;
+    background-color: #fff;
+    width: 200px;
+}
+
+label {
+    font-weight: bold;
 }

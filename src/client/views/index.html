@@ -2,23 +2,43 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>Test</title>
     </head>
 
     <body>
 
         <header>
-            <div class="">
+            <div class="headerLogoBox">
                 <img id="previewLogo" alt="PREVIEW-Logo" width="150px" /> 
             </div>
-            <div class="">
-                navigation
+            <div class="headerCenterPanel">
+                Travel Planner
             </div>
         </header>
 
         <main>
+            <section id="inputForm">
+                <form id="planningForm">
+                    <div id="inputForm_location">
+                        <label for="location">Trip to (*):</label><br>
+                        <input type="text" placeholder="Enter Location ..." id="location">
+                    </div>
+                    <div id="inputForm_date_from">
+                        <label for="date_from">Planned Departure (*):</label><br>
+                        <input type="text" placeholder="YYYY-MM-DD" id="date_from">
+                    </div>
+                    <div id="inputForm_date_to">
+                        <label for="date_to">Planned Arrival:</label><br>
+                        <input type="text" placeholder="YYYY-MM-DD" id="date_to">
+                    </div>
+                    <input type="submit" name="" value="Save trip" id="inputForm_submit">
+                </form>
+                <span class="formHints">(*) field required</span>
+            </section>
+
             <section>
-                <form class="">
+                <form id="testForm">
                     <input id="sentimentSentence" type="text" name="input" value="" placeholder="Please enter a sentence to be reviewed ...">
                     <input type="submit" name="" value="submit" id="sentimentFormSubmit">
                 </form>
@@ -56,7 +76,7 @@
         </footer>
 
         <!-- comment out script-block if IE11 compatibilty is required -->
-        <script>
+        <!-- <script>
             // Check that service workers are supported
             if ('serviceWorker' in navigator) {
                 // Use the window load event to keep the page load performant
@@ -64,7 +84,7 @@
                     navigator.serviceWorker.register('/service-worker.js');
                 });
             }
-        </script>
+        </script> -->
 
     </body>
 </html>

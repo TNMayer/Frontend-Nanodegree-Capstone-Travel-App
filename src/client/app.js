@@ -4,13 +4,19 @@ import "isomorphic-fetch"
 import './styles/resets.scss';
 import './styles/base.scss';
 import './styles/footer.scss';
-import './styles/form.scss';
 import './styles/header.scss';
+import './styles/form.scss';
+import '../../node_modules/pikaday/css/pikaday.css';
+
 // images
 import previewLogo from './images/preview_logo.svg';
 // import from js modules
 const {updateUI, updateUI_error, validSentence} = require('./js/updateUI.js');
 const {postData} = require('./js/apiHandling.js');
+
+// include Date Picker
+const pikaday = require('pikaday');
+const moment = require('moment');
 
 //include images
 let headerLogo = document.getElementById('previewLogo');
@@ -39,3 +45,19 @@ function performSubmitAction(event) {
     }
 
 }
+
+//add the datepicker to input field
+let date_from = document.getElementById('date_from');
+let date_to = document.getElementById('date_to');
+const picker_from = new pikaday({ 
+    field: document.getElementById('date_from'),
+    format: "YYYY-MM-DD",
+    firstDay: 1,
+    minDate: moment().toDate()
+});
+const picker_to = new pikaday({ 
+    field: document.getElementById('date_to'),
+    format: "YYYY-MM-DD",
+    firstDay: 1,
+    minDate: moment().toDate()
+});

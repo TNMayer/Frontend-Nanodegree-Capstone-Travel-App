@@ -20,21 +20,22 @@
         <main>
             <section id="inputForm">
                 <form id="planningForm">
-                    <div id="inputForm_location">
+                    <div id="inputForm_location" class="errorBorder">
                         <label for="location">Trip to (*):</label><br>
                         <input type="text" placeholder="Enter Location ..." id="location">
                     </div>
-                    <div id="inputForm_date_from">
-                        <label for="date_from">Planned Departure (*):</label><br>
+                    <div id="inputForm_date_from" class="errorBorder">
+                        <label for="date_from">Planned Arrival (*):</label><br>
                         <input type="text" placeholder="YYYY-MM-DD" id="date_from">
                     </div>
-                    <div id="inputForm_date_to">
-                        <label for="date_to">Planned Arrival:</label><br>
+                    <div id="inputForm_date_to" class="errorBorder">
+                        <label for="date_to">Planned Departure:</label><br>
                         <input type="text" placeholder="YYYY-MM-DD" id="date_to">
                     </div>
                     <input type="submit" name="" value="Save trip" id="inputForm_submit">
                 </form>
-                <span class="formHints">(*) field required</span>
+                <span class="formHints">(*) valid input required</span>
+                <div id="errorBox"></div>
             </section>
 
             <section>

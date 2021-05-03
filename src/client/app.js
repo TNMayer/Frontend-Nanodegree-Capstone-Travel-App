@@ -13,6 +13,7 @@ import previewLogo from './images/preview_logo.svg';
 // import from js modules
 const {updateUI, updateUI_error, validSentence} = require('./js/updateUI.js');
 const {postData} = require('./js/apiHandling.js');
+const {inputFormValidation} = require('./js/formValidation.js');
 
 // include Date Picker
 const pikaday = require('pikaday');
@@ -21,6 +22,13 @@ const moment = require('moment');
 //include images
 let headerLogo = document.getElementById('previewLogo');
 headerLogo.src = previewLogo;
+
+// form handling
+let formSubmit = document.getElementById("inputForm_submit");
+formSubmit.addEventListener("click", function(event) {
+    event.preventDefault();
+    inputFormValidation();
+})
 
 //submit button handling
 let submitButton = document.getElementById("sentimentFormSubmit");

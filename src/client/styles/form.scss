@@ -32,6 +32,18 @@ input {
     width: 49.5%;
 }
 
+@media screen and (max-width: 550px) {
+    #inputForm_date_from {
+        display: block;
+        width: 100%;
+    }
+
+    #inputForm_date_to {
+        display: block;
+        width: 100%;
+    }
+}
+
 #inputForm_submit {
     border-radius: 8px;
     font-weight: bold;
@@ -44,5 +56,5 @@ label {
 }
 
 .errorBorder {
-    border: 1px solid red;
+    border: 2px solid red;
 }

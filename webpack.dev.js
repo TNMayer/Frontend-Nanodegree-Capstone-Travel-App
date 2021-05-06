@@ -64,11 +64,43 @@ module.exports = {
                             confidence: data.confidence,
                             irony: data.irony,
                             inputSentence: input
-                        }
+                        };
                         console.log(dataSubset);
                         response.send(dataSubset);
-                    })
+                    });
             });
+
+            const getGeocodingApiData = async (inputData) => {
+
+                let username = "tnmayer";
+                const fetchUrl = `http://api.geonames.org/searchJSON?q=${inputData.location}&maxRows=1&username=${username}`;
+                console.log(fetchUrl);
+                const geonamesResult = await fetch(fetchUrl);
+            
+                try {
+                    const geonamesData = await geonamesResult.json();
+                    return geonamesData;
+                } catch(error) {
+                    console.log("Geonames GET Error: ", error);
+                }
+            
+            };
+
+            app.post('/geocodingAPI', function(request, response) {
+                let input = request.body.content;
+            
+                getGeocodingApiData(input)
+                    .then(function(data) {
+                        let dataSubset = {
+                            latitude: data.geonames[0].lat,
+                            longitude: data.geonames[0].lng
+                        };
+                        console.log(dataSubset);
+                        response.send(dataSubset);
+                    });
+            });
+
+            // weatherbit: https://api.weatherbit.io/v2.0/normals?key=40ae74205aa54f87a9cb923a8ab80c34&lat=38.0&lon=-78.0&start_day=05-10&end_day=05-20
         },
         compress: true,
         port: 3330,
@@ -102,7 +134,17 @@ module.exports = {
             },
             {
                 test: /\.(png|jp(e*)g|svg)$/,
-                type: 'asset/resource'
+                type: 'asset/resource',
+                generator: {
+                    filename: 'images/[name][ext]'
+                }
+            },
+            {
+                test: /\.json$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'json/[name][ext]'
+                }
             },
         ]
     },

@@ -18,17 +18,17 @@
         </header>
 
         <main>
-            <section id="inputForm">
+            <section class="outputBox">
                 <form id="planningForm">
-                    <div id="inputForm_location" class="errorBorder">
+                    <div id="inputForm_location">
                         <label for="location">Trip to (*):</label><br>
                         <input type="text" placeholder="Enter Location ..." id="location">
                     </div>
-                    <div id="inputForm_date_from" class="errorBorder">
+                    <div id="inputForm_date_from">
                         <label for="date_from">Planned Arrival (*):</label><br>
                         <input type="text" placeholder="YYYY-MM-DD" id="date_from">
                     </div>
-                    <div id="inputForm_date_to" class="errorBorder">
+                    <div id="inputForm_date_to">
                         <label for="date_to">Planned Departure:</label><br>
                         <input type="text" placeholder="YYYY-MM-DD" id="date_to">
                     </div>
@@ -38,8 +38,16 @@
                 <div id="errorBox"></div>
             </section>
 
+            <div id="tripOverviewHeader">
+                Saved Trips
+            </div>
+
+            <section class="outBox">
+                <div>Test</div>
+            </section>
+
             <section>
-                <form id="testForm">
+                <form class="outBox">
                     <input id="sentimentSentence" type="text" name="input" value="" placeholder="Please enter a sentence to be reviewed ...">
                     <input type="submit" name="" value="submit" id="sentimentFormSubmit">
                 </form>

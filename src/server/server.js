@@ -5,7 +5,7 @@ const express = require('express');
 const mockAPIResponse = require('./mockAPI.js');
 const fetch = require('node-fetch');
 const {sentimentApiKey, geoNamesUserName, weatherbitKey, pixabayKey} = require('./apiData.js');
-const port = 6000;
+const port = 8000;
 
 const app = express();
 
@@ -39,7 +39,9 @@ app.get('/test', function (req, res) {
 // POST Routes
 const getSentimentApiData = async (inputData) => {
 
-    let key = sentimentApiKey();
+    // let key = "8fea75fbf1a4e6d2bb0404e8c79843b0";
+    const key = sentimentApiKey();
+    console.log(key);
     let format = 'txt';
     const fetchUrl = `https://api.meaningcloud.com/sentiment-2.1?key=${key}&${format}=${inputData}&model=general&lang=en`
     console.log(fetchUrl);
@@ -68,5 +70,36 @@ app.post('/sentimentAPI', function(request, response) {
             }
             console.log(dataSubset);
             response.send(dataSubset);
-        })
+        });
+});
+
+const getGeocodingApiData = async (inputData) => {
+
+    let username = "tnmayer";
+    const fetchUrl = `http://api.geonames.org/searchJSON?q=Bitburg&maxRows=1&username=${username}`;
+    console.log(fetchUrl);
+    const geonamesResult = await fetch(fetchUrl);
+
+    try {
+        const geonamesData = await geonamesResult.json();
+        console.log(geonamesData);
+        return geonamesData;
+    } catch(error) {
+        console.log("Geonames GET Error: ", error);
+    }
+
+};
+
+app.post('/geocodingAPI', function(request, response) {
+    let input = request.body.content;
+
+    getGeocodingApiData(input)
+        .then(function(data) {
+            let dataSubset = {
+                latitude: data.geonames[0].lat,
+                longitude: data.geonames[0].lng
+            };
+            console.log(dataSubset);
+            response.send(dataSubset);
+        });
 });

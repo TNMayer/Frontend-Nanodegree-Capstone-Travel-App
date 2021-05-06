@@ -24,8 +24,8 @@ const postData = async (url = "", data = {}) => {
 };
 
 const checkUrl = function(url) {
-    if ((url === "/sentimentAPI")) {
-        return true
+    if ((url === "/sentimentAPI") || (url === "/geocodingAPI") || (url === "/weatherAPI")) {
+        return true;
     } else {
         try {
             new URL(url);

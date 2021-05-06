@@ -10,6 +10,10 @@ import '../../node_modules/pikaday/css/pikaday.css';
 
 // images
 import previewLogo from './images/preview_logo.svg';
+
+//json ressources
+import exampleData from './json/example.json';
+
 // import from js modules
 const {updateUI, updateUI_error, validSentence} = require('./js/updateUI.js');
 const {postData} = require('./js/apiHandling.js');
@@ -27,7 +31,24 @@ headerLogo.src = previewLogo;
 let formSubmit = document.getElementById("inputForm_submit");
 formSubmit.addEventListener("click", function(event) {
     event.preventDefault();
-    inputFormValidation();
+    let errorCounter = inputFormValidation();
+    console.log(exampleData);
+    console.log(errorCounter);
+    if (errorCounter.errorCounter === 0) {
+        postData('/geocodingAPI', {content: errorCounter})
+            .then(function(data) {
+                const outData = {
+                    latitude: data.latitude,
+                    longitude: data.longitude,
+                    startDate: errorCounter.dateFrom.substring(5)
+                };
+                postData('/weatherAPI', {content: outData})
+                    .then(function(data) {
+                        console.log(data);
+                    });
+                console.log(outData);
+            });
+    }
 })
 
 //submit button handling
@@ -55,8 +76,6 @@ function performSubmitAction(event) {
 }
 
 //add the datepicker to input field
-let date_from = document.getElementById('date_from');
-let date_to = document.getElementById('date_to');
 const picker_from = new pikaday({ 
     field: document.getElementById('date_from'),
     format: "YYYY-MM-DD",

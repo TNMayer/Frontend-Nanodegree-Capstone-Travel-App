@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const {sentimentApiKey, geoNamesUserName, weatherbitKey, pixabayKey} = require('./src/server/apiData.js');
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const WorkboxPlugin = require('workbox-webpack-plugin');
 
@@ -33,48 +34,32 @@ module.exports = {
         setup: function (app, server) {
             const fetch = require('node-fetch');
             
+            let appData = [];
+            let dataElement = {};
+            
             var bodyParser = require('body-parser');    
             app.use(bodyParser.json());
 
-            const getSentimentApiData = async (inputData) => {
-
-                let key = "8fea75fbf1a4e6d2bb0404e8c79843b0";
-                let format = 'txt';
-                const fetchUrl = `https://api.meaningcloud.com/sentiment-2.1?key=${key}&${format}=${inputData}&model=general&lang=en`
-                console.log(fetchUrl);
-                const sentimentResult = await fetch(fetchUrl);
-            
-                try {
-                    const sentimentData = await sentimentResult.json();
-                    return sentimentData;
-                } catch(error) {
-                    console.log("Sentiment GET Error: ", error);
-                }
-            
-            };
-
-            app.post('/sentimentAPI', function(request, response) {
-                let input = request.body.content;
-            
-                getSentimentApiData(input)
-                    .then(function(data) {
-                        let dataSubset = {
-                            agreement: data.agreement,
-                            subjectivity: data.subjectivity,
-                            confidence: data.confidence,
-                            irony: data.irony,
-                            inputSentence: input
-                        };
-                        console.log(dataSubset);
-                        response.send(dataSubset);
-                    });
-            });
-
             const getGeocodingApiData = async (inputData) => {
 
-                let username = "tnmayer";
-                const fetchUrl = `http://api.geonames.org/searchJSON?q=${inputData.location}&maxRows=1&username=${username}`;
+                const username = geoNamesUserName();
+                const location = encodeURI(inputData.location);
+                const fetchUrl = `http://api.geonames.org/searchJSON?q=${location}&maxRows=1&username=${username}`;
                 console.log(fetchUrl);
+                
+                dataElement.timestamp = new Date().toLocaleString();
+                
+                if (appData.length === 0) {
+                    dataElement.id = 1;
+                } else {
+                    const maxId = Math.max.apply(Math, appData.map(function(o) { return o.id; }));
+                    dataElement.id = maxId + 1;
+                }
+                
+                dataElement.location = inputData.location;
+                dataElement.dateFrom = inputData.dateFrom;
+                dataElement.dateTo = inputData.dateTo;
+                
                 const geonamesResult = await fetch(fetchUrl);
             
                 try {
@@ -95,12 +80,112 @@ module.exports = {
                             latitude: data.geonames[0].lat,
                             longitude: data.geonames[0].lng
                         };
-                        console.log(dataSubset);
+                        
+                        dataElement.latitude = dataSubset.latitude;
+                        dataElement.longitude = dataSubset.longitude;
+
                         response.send(dataSubset);
                     });
             });
 
-            // weatherbit: https://api.weatherbit.io/v2.0/normals?key=40ae74205aa54f87a9cb923a8ab80c34&lat=38.0&lon=-78.0&start_day=05-10&end_day=05-20
+            const getWeatherApiData = async (inputData) => {
+
+                let key = weatherbitKey();
+                const fetchUrl = `https://api.weatherbit.io/v2.0/normals?key=${key}&lat=${inputData.latitude}&lon=${inputData.longitude}&start_day=${inputData.startDate}&end_day=${inputData.startDate}`;
+                console.log(fetchUrl);
+                const weatherResult = await fetch(fetchUrl);
+            
+                try {
+                    const weatherData = await weatherResult.json();
+                    return weatherData;
+                } catch(error) {
+                    console.log("Weatherbit GET Error: ", error);
+                }
+            
+            };
+
+            app.post('/weatherAPI', function(request, response) {
+                let input = request.body.content;
+            
+                getWeatherApiData(input)
+                    .then(function(data) {
+                        let dataSubset = {
+                            min_temp: data.data[0].min_temp,
+                            max_temp: data.data[0].max_temp,
+                            temp: data.data[0].temp,
+                            precip: data.data[0].precip,
+                            max_wind_spd: data.data[0].max_wind_spd,
+                            min_wind_spd: data.data[0].min_wind_spd
+                        };
+                        
+                        dataElement.min_temp = dataSubset.min_temp;
+                        dataElement.max_temp = dataSubset.max_temp;
+                        dataElement.temp = dataSubset.temp;
+                        dataElement.precip = dataSubset.precip;
+                        dataElement.max_wind_spd = dataSubset.max_wind_spd;
+                        dataElement.min_wind_spd = dataSubset.min_wind_spd;
+
+                        response.send(dataElement);
+                    });
+            });
+
+            const getImageApiData = async (inputData) => {
+
+                let key = pixabayKey();
+                const location = encodeURI(inputData.location);
+                const fetchUrl = `https://pixabay.com/api/?key=${key}&q=${location}&image_type=photo&total=1`;
+                console.log(fetchUrl);
+                const imageResult = await fetch(fetchUrl);
+            
+                try {
+                    const imageData = await imageResult.json();
+                    return imageData;
+                } catch(error) {
+                    console.log("Pixaby API GET Error: ", error);
+                }
+            
+            };
+
+            app.post('/imageAPI', function(request, response) {
+                let input = request.body.content;
+            
+                getImageApiData(input)
+                    .then(function(data) {
+                        let imageSrc = "";
+
+                        if (data.totalHits > 0) {
+                            imageSrc = data.hits[0].webformatURL
+                        } else {
+                            imageSrc = "NULL";
+                        }
+                        
+                        dataElement.imageSrc = imageSrc;
+
+                        if((appData.length === 0)) {
+                            appData.unshift(dataElement);
+                        } else {
+                            const previousElement = appData[0];
+                            if(
+                                (previousElement.location !== dataElement.location) ||
+                                (previousElement.dateFrom !== dataElement.dateFrom) ||
+                                (previousElement.dateTo !== dataElement.dateTo)
+                            ) {
+                                appData.unshift(dataElement);
+                            }
+                        }
+                        dataElement = {};
+
+                        response.send(appData[0]);
+                    });
+            });
+
+            // GET Routes
+            app.get('/appData', getAppData);
+
+            function getAppData(request, response) {
+                response.send(appData);
+            }
+
         },
         compress: true,
         port: 3330,

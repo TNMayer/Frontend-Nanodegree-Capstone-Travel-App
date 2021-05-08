@@ -10,6 +10,19 @@ section {
     margin: 20px auto;
 }
 
+.outBox {
+    border: 1px solid #545454;
+    border-radius: 3px;
+    padding: 10px 10px;
+    padding-bottom: 0;
+}
+
+.outputBox {
+    padding: 10px 40px;
+    background-color: #eee;
+    border: 1px solid black;
+}
+
 #tripOverviewHeader {
     max-width: 800px;
     margin: 20px auto;

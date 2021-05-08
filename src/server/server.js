@@ -1,4 +1,5 @@
-let postData = [];
+let appData = [];
+let dataElement = {};
 
 var path = require('path');
 const express = require('express');
@@ -6,6 +7,7 @@ const mockAPIResponse = require('./mockAPI.js');
 const fetch = require('node-fetch');
 const {sentimentApiKey, geoNamesUserName, weatherbitKey, pixabayKey} = require('./apiData.js');
 const port = 8000;
+const moment = require('moment');
 
 const app = express();
 
@@ -39,7 +41,6 @@ app.get('/test', function (req, res) {
 // POST Routes
 const getSentimentApiData = async (inputData) => {
 
-    // let key = "8fea75fbf1a4e6d2bb0404e8c79843b0";
     const key = sentimentApiKey();
     console.log(key);
     let format = 'txt';
@@ -75,14 +76,20 @@ app.post('/sentimentAPI', function(request, response) {
 
 const getGeocodingApiData = async (inputData) => {
 
-    let username = "tnmayer";
-    const fetchUrl = `http://api.geonames.org/searchJSON?q=Bitburg&maxRows=1&username=${username}`;
+    const username = geoNamesUserName();
+    const location = encodeURI(inputData.location);
+    const fetchUrl = `http://api.geonames.org/searchJSON?q=${location}&maxRows=1&username=${username}`;
     console.log(fetchUrl);
+    
+    dataElement.timestamp = Date.now();
+    dataElement.location = inputData.location;
+    dataElement.dateFrom = inputData.dateFrom;
+    dataElement.dateTo = inputData.dateTo;
+    
     const geonamesResult = await fetch(fetchUrl);
 
     try {
         const geonamesData = await geonamesResult.json();
-        console.log(geonamesData);
         return geonamesData;
     } catch(error) {
         console.log("Geonames GET Error: ", error);
@@ -99,7 +106,54 @@ app.post('/geocodingAPI', function(request, response) {
                 latitude: data.geonames[0].lat,
                 longitude: data.geonames[0].lng
             };
-            console.log(dataSubset);
+            
+            dataElement.latitude = dataSubset.latitude;
+            dataElement.longitude = dataSubset.longitude;
+
             response.send(dataSubset);
+        });
+});
+
+const getWeatherApiData = async (inputData) => {
+
+    let key = weatherbitKey();
+    const fetchUrl = `https://api.weatherbit.io/v2.0/normals?key=${key}&lat=${inputData.latitude}&lon=${inputData.longitude}&start_day=${inputData.startDate}&end_day=${inputData.startDate}`;
+    console.log(fetchUrl);
+    const weatherResult = await fetch(fetchUrl);
+
+    try {
+        const weatherData = await weatherResult.json();
+        return weatherData;
+    } catch(error) {
+        console.log("Weatherbit GET Error: ", error);
+    }
+
+};
+
+app.post('/weatherAPI', function(request, response) {
+    let input = request.body.content;
+
+    getWeatherApiData(input)
+        .then(function(data) {
+            let dataSubset = {
+                min_temp: data.data[0].min_temp,
+                max_temp: data.data[0].max_temp,
+                temp: data.data[0].temp,
+                precip: data.data[0].precip,
+                max_wind_spd: data.data[0].max_wind_spd,
+                min_wind_spd: data.data[0].min_wind_spd
+            };
+            
+            dataElement.min_temp = dataSubset.min_temp;
+            dataElement.max_temp = dataSubset.max_temp;
+            dataElement.temp = dataSubset.temp;
+            dataElement.precip = dataSubset.precip;
+            dataElement.max_wind_spd = dataSubset.max_wind_spd;
+            dataElement.min_wind_spd = dataSubset.min_wind_spd;
+
+            appData.unshift(dataElement);
+            dataElement = {};
+
+            response.send(appData);
         });
 });

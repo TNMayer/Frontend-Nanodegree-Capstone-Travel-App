@@ -1,0 +1,54 @@
+.tripCard {
+    width: 100%;
+    background-color: #fad1d0;
+    margin-bottom: 10px;
+}
+
+.tripPicture {
+    display: inline-block;
+    width: 49.5%;
+    padding: 5px;
+}
+
+.tripDetails {
+    display: inline-block;
+    width: 49.5%;
+    padding: 5px;
+    vertical-align: top;
+}
+
+@media screen and (max-width: 600px) {
+    .tripPicture {
+        width: 100%;
+    }
+    .tripDetails {
+        width: 100%;
+    }
+}
+
+.tripLocation {
+    font-weight: bold;
+    text-decoration: unerline;
+    margin-bottom: 5px;
+    font-size: 1.3em;
+}
+
+.removeButton {
+    width: 150px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.tripTimeaway {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.tripWeather {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.weatherDetails {
+    font-size: 0.8em;
+}

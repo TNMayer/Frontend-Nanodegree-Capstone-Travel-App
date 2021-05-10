@@ -10,18 +10,23 @@
     padding: 5px;
 }
 
-.tripDetails {
+.tripMap {
     display: inline-block;
     width: 49.5%;
     padding: 5px;
+    height: 250px;
     vertical-align: top;
+}
+
+.tripDetails {
+    width: 100%;
 }
 
 @media screen and (max-width: 600px) {
     .tripPicture {
         width: 100%;
     }
-    .tripDetails {
+    .tripMap {
         width: 100%;
     }
 }

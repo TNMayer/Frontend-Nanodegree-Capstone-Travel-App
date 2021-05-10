@@ -1,4 +1,7 @@
+//external js libraries
+//================================================
 import "isomorphic-fetch"
+//================================================
 
 // styles
 import './styles/resets.scss';
@@ -6,7 +9,11 @@ import './styles/base.scss';
 import './styles/header.scss';
 import './styles/form.scss';
 import './styles/tripCard.scss';
+//external css
+//================================================
 import '../../node_modules/pikaday/css/pikaday.css';
+import 'leaflet/dist/leaflet.css';
+//================================================
 
 // images
 import previewLogo from './images/preview_logo.svg';
@@ -15,10 +22,7 @@ import previewLogo from './images/preview_logo.svg';
 const {apiPosts, getAppData} = require('./js/apiHandling.js');
 const {inputFormValidation} = require('./js/formValidation.js');
 const {initializeTrips} = require('./js/tripCards.js');
-
-// include Date Picker
-const pikaday = require('pikaday');
-const moment = require('moment');
+const {createDatepicker} = require('./js/datepicker.js');
 
 //include images
 let headerLogo = document.getElementById('previewLogo');
@@ -42,15 +46,5 @@ formSubmit.addEventListener("click", function(event) {
 });
 
 //add the datepicker to input field
-const picker_from = new pikaday({ 
-    field: document.getElementById('date_from'),
-    format: "YYYY-MM-DD",
-    firstDay: 1,
-    minDate: moment().toDate()
-});
-const picker_to = new pikaday({ 
-    field: document.getElementById('date_to'),
-    format: "YYYY-MM-DD",
-    firstDay: 1,
-    minDate: moment().toDate()
-});
+createDatepicker('date_from');
+createDatepicker('date_to');

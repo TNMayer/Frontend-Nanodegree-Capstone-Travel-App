@@ -92,7 +92,12 @@ const createTripMap = function(data) {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(tripMap);
-    var marker = L.marker([data.latitude, data.longitude]).addTo(tripMap);
+    
+    addLocationMarker(tripMap, data);
+}
+
+const addLocationMarker = function(mapObject, data) {
+    var marker = L.marker([data.latitude, data.longitude]).addTo(mapObject);
     marker.bindPopup(`<span style="font-weight: bold;">${data.location}</span>`).openPopup();
 }
 

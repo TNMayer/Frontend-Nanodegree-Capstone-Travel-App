@@ -3,9 +3,8 @@ let dataElement = {};
 
 var path = require('path');
 const express = require('express');
-const mockAPIResponse = require('./mockAPI.js');
 const fetch = require('node-fetch');
-const {sentimentApiKey, geoNamesUserName, weatherbitKey, pixabayKey} = require('./apiData.js');
+const {geoNamesUserName, weatherbitKey, pixabayKey} = require('./api_data.js');
 const port = 8000;
 const moment = require('moment');
 
@@ -25,53 +24,13 @@ console.log(__dirname)
 
 app.get('/', function (req, res) {
     res.sendFile('./deployment/index.html')
-})
+});
 
-// designates what port the app will listen to for incoming requests
-app.listen(port, function () {
-    console.log('Example app listening on port ' + port + '!');
-})
-
-// GET Routes
-app.get('/test', function (req, res) {
-    res.send(mockAPIResponse)
-})
-
-
-// POST Routes
-const getSentimentApiData = async (inputData) => {
-
-    const key = sentimentApiKey();
-    console.log(key);
-    let format = 'txt';
-    const fetchUrl = `https://api.meaningcloud.com/sentiment-2.1?key=${key}&${format}=${inputData}&model=general&lang=en`
-    console.log(fetchUrl);
-    const sentimentResult = await fetch(fetchUrl);
-
-    try {
-        const sentimentData = await sentimentResult.json();
-        return sentimentData;
-    } catch(error) {
-        console.log("Sentiment GET Error: ", error);
-    }
-
-};
-
-app.post('/sentimentAPI', function(request, response) {
-    let input = request.body.content;
-
-    getSentimentApiData(input)
-        .then(function(data) {
-            let dataSubset = {
-                agreement: data.agreement,
-                subjectivity: data.subjectivity,
-                confidence: data.confidence,
-                irony: data.irony,
-                inputSentence: input
-            }
-            console.log(dataSubset);
-            response.send(dataSubset);
-        });
+// test endpoint
+app.get('/testendpoint', function(request, response) {
+    response.json({
+      status : 200
+    });
 });
 
 const getGeocodingApiData = async (inputData) => {
@@ -81,7 +40,15 @@ const getGeocodingApiData = async (inputData) => {
     const fetchUrl = `http://api.geonames.org/searchJSON?q=${location}&maxRows=1&username=${username}`;
     console.log(fetchUrl);
     
-    dataElement.timestamp = Date.now();
+    dataElement.timestamp = new Date().toLocaleString();
+    
+    if (appData.length === 0) {
+        dataElement.id = 1;
+    } else {
+        const maxId = Math.max.apply(Math, appData.map(function(o) { return o.id; }));
+        dataElement.id = maxId + 1;
+    }
+    
     dataElement.location = inputData.location;
     dataElement.dateFrom = inputData.dateFrom;
     dataElement.dateTo = inputData.dateTo;
@@ -96,6 +63,12 @@ const getGeocodingApiData = async (inputData) => {
     }
 
 };
+
+app.post('/removeElement', function(request, response) {
+    let inputId = request.body.content.id;
+    appData = appData.filter(object => object.id != inputId);
+    console.log("Removed object with ID: " + inputId);
+});
 
 app.post('/geocodingAPI', function(request, response) {
     let input = request.body.content;
@@ -151,9 +124,72 @@ app.post('/weatherAPI', function(request, response) {
             dataElement.max_wind_spd = dataSubset.max_wind_spd;
             dataElement.min_wind_spd = dataSubset.min_wind_spd;
 
-            appData.unshift(dataElement);
-            dataElement = {};
-
-            response.send(appData);
+            response.send(dataElement);
         });
 });
+
+const getImageApiData = async (inputData) => {
+
+    let key = pixabayKey();
+    const location = encodeURI(inputData.location);
+    const fetchUrl = `https://pixabay.com/api/?key=${key}&q=${location}&image_type=photo&total=1`;
+    console.log(fetchUrl);
+    const imageResult = await fetch(fetchUrl);
+
+    try {
+        const imageData = await imageResult.json();
+        return imageData;
+    } catch(error) {
+        console.log("Pixaby API GET Error: ", error);
+    }
+
+};
+
+app.post('/imageAPI', function(request, response) {
+    let input = request.body.content;
+
+    getImageApiData(input)
+        .then(function(data) {
+            let imageSrc = "";
+
+            if (data.totalHits > 0) {
+                imageSrc = data.hits[0].webformatURL
+            } else {
+                imageSrc = "NULL";
+            }
+            
+            dataElement.imageSrc = imageSrc;
+
+            if((appData.length === 0)) {
+                appData.unshift(dataElement);
+            } else {
+                const previousElement = appData[0];
+                if(
+                    (previousElement.location !== dataElement.location) ||
+                    (previousElement.dateFrom !== dataElement.dateFrom) ||
+                    (previousElement.dateTo !== dataElement.dateTo)
+                ) {
+                    appData.unshift(dataElement);
+                }
+            }
+            dataElement = {};
+
+            response.send(appData[0]);
+        });
+});
+
+// GET Routes
+app.get('/appData', getAppData);
+
+function getAppData(request, response) {
+    response.send(appData);
+}
+
+// designates what port the app will listen to for incoming requests
+app.listen(port, function () {
+    console.log('App server is running on port ' + port + '!');
+});
+
+module.exports = {
+    app
+};

@@ -1,12 +1,16 @@
-# Evaluate a news article with Natural Language Processing
+# FEND Capstone Project: Travel App
 
-This project is part of the Udacity Frontend Nanodegree. The page is build with webpack and heavily relies on Javascript with an Express server setup and an Frontend that is able to call the MeaningCloud Sentiment API (https://www.meaningcloud.com/developer/sentiment-analysis).
+This project is part of the Udacity Frontend Nanodegree. The page is build with webpack and heavily relies on Javascript with an Express server setup and an Frontend that is able to call three API´s:
+* Geonames API (http://www.geonames.org/export/web-services.html)
+* Weatherbit API (https://www.weatherbit.io/api)
+* Pixabay API (https://pixabay.com/api/docs/)
 
 ## Project Setup
 
-* In order to use the MeaningCloud API you need an API-key that can be accessed via the URL mentioned above.
-* Once you have your own API-key you can setup the project by replacing the key in line 43 of the server.js file (./src/server/server.js).
+* In order to make the project running you need API keys for the aforementioned API´s.
+* Enter your API keys in the api_data.js file (./src/server/apiData.js)
 * Install all Dependencies of the project by running the command `npm install`
 * Build a deployment version of the project by running the command `npm run build-prod`
 * Run the Express server by the command `npm run start`
-* Now you can access the project in your favorite browser via: http://localhost:8080.
+* Now you can access the project in your favorite browser via: http://localhost:8000.
+* Alternatively you can also use the development version of the project. For that you need just to enter the command `npm run build-dev`.

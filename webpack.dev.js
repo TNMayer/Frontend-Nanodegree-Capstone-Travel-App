@@ -2,7 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const {geoNamesUserName, weatherbitKey, pixabayKey} = require('./src/server/apiData.js');
+const {geoNamesUserName, weatherbitKey, pixabayKey} = require('./src/server/api_data.js');
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const WorkboxPlugin = require('workbox-webpack-plugin');
 

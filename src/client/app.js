@@ -45,6 +45,17 @@ formSubmit.addEventListener("click", function(event) {
     apiPosts(errorCounter);
 });
 
+// mapViewSelection
+// const checkboxContainer = document.getElementById("checkboxContainer");
+// const mapInput = document.getElementById("mapInput");
+// let checkboxCounter = 0;
+
+// checkboxContainer.addEventListener("click", function(event) {
+//     mapInput.classList.toggle("mapViewToggle");
+//     checkboxCounter += 1;
+//     createSelectionMap(checkboxCounter);
+// });
+
 //add the datepicker to input field
 createDatepicker('date_from');
 createDatepicker('date_to');

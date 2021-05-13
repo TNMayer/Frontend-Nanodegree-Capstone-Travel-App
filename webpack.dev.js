@@ -2,7 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const {sentimentApiKey, geoNamesUserName, weatherbitKey, pixabayKey} = require('./src/server/apiData.js');
+const {geoNamesUserName, weatherbitKey, pixabayKey} = require('./src/server/apiData.js');
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const WorkboxPlugin = require('workbox-webpack-plugin');
 
@@ -70,6 +70,12 @@ module.exports = {
                 }
             
             };
+
+            app.post('/removeElement', function(request, response) {
+                let inputId = request.body.content.id;
+                appData = appData.filter(object => object.id != inputId);
+                console.log("Removed object with ID: " + inputId);
+            });
 
             app.post('/geocodingAPI', function(request, response) {
                 let input = request.body.content;

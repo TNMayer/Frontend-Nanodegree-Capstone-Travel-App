@@ -1,42 +1,6 @@
 require("regenerator-runtime/runtime");
+const {postData} = require("./apiHelpers.js");
 const {prependTrip} = require('./tripCards.js');
-
-// post
-const postData = async (url = "", data = {}) => {
-    if (checkUrl(url)) {
-        const response = await fetch(url, {
-            method: 'POST', // GET, POST, PUT, DELETE, etc.
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        });
-
-        try {
-            const newData = await response.json();
-            return newData;
-        } catch(error) {
-            console.log("Error: ", error);
-        }
-    } else {
-        console.log("ERROR: The URL you are trying to fetch is invalid");
-    }
-};
-
-const checkUrl = function(url) {
-    if ((url === "/sentimentAPI") || (url === "/geocodingAPI") || (url === "/weatherAPI") || (url === "/imageAPI") || (url === "/appData")) {
-        return true;
-    } else {
-        try {
-            new URL(url);
-        } catch (error) {
-            return false;
-        }
-        
-        return true;
-    }
-}
 
 const apiPosts = function(errorCounter) {
     if (errorCounter.errorCounter === 0) {
@@ -82,8 +46,6 @@ const getAppData = async() => {
 };
 
 module.exports = {
-    postData,
-    checkUrl,
-    apiPosts,
-    getAppData
+    getAppData,
+    apiPosts
 };

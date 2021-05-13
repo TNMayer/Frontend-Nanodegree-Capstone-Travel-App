@@ -46,3 +46,22 @@ label {
 .errorBorder {
     border: 2px solid red;
 }
+
+#mapView {
+    display: flex;
+}
+
+#checkboxContainer {
+    flex: 40px;
+}
+
+#checkboxLabel {
+    display: flex;
+    flex: calc(100% - 50px);
+    align-items: center;
+}
+
+.mapViewToggle {
+    height: 400px;
+    width: 100%;
+}

@@ -1,7 +1,8 @@
+const {removeFromServer} = require("./apiHelpers.js");
+
 //external js libraries
 //================================================
 // include leaflet for mapping functionality
-// import L from 'leaflet';
 const L = require('leaflet');
 /* This code is needed to properly load the images in the Leaflet CSS */
 delete L.Icon.Default.prototype._getIconUrl;
@@ -75,6 +76,16 @@ const prependTrip = function(appData, maxElements = 5) {
     } else {
         savedTripsBox.insertBefore(firstChild, savedTripsBox.firstChild);
 
+        const removeButton = firstChild.querySelector(".removeButton");
+        removeButton.addEventListener("click", function(event) {
+            event.preventDefault();
+            const elemId = removeButton.getAttribute('data-id')
+            console.log(elemId);
+            firstChild.remove();
+            // remove Element from server
+            removeFromServer(elemId);
+        });
+
         if (savedTripsBox.childElementCount > maxElements) {
             savedTripsBox.removeChild(savedTripsBox.lastChild);
         }
@@ -87,7 +98,7 @@ const createTripMap = function(data) {
     //create trip map
     const mapId = 'tripMap_' + data.id;
     
-    var tripMap = L.map(mapId).setView([Number(data.latitude), Number(data.longitude)], 5);
+    var tripMap = L.map(mapId).setView([data.latitude, data.longitude], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -111,9 +122,35 @@ const initializeTrips = function(appData) {
         savedTripsBox.appendChild(element);
         createTripMap(data);
     }
+
+    const removeButton = document.querySelectorAll(".removeButton");
+    removeButton.forEach(item => {
+        item.addEventListener('click', event => {
+            event.preventDefault();
+            console.log(item.getAttribute('data-id'));
+            const elemId = "tripCard_" + item.getAttribute('data-id');
+            const tripContainer = document.getElementById(elemId);
+            tripContainer.parentNode.remove();
+            // remove element from server
+            removeFromServer(item.getAttribute('data-id'));
+        });
+    });
+}
+
+const createSelectionMap = function(counter) {
+    const mapViewCheckbox = document.getElementById("mapViewCheckbox");
+    
+    if (mapViewCheckbox.checked && (counter === 1)) {
+        const selectionMap = L.map("mapInput").setView([0, 0], 3);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(selectionMap);
+    }
 }
 
 module.exports = {
     prependTrip,
-    initializeTrips
+    initializeTrips,
+    createSelectionMap
 };

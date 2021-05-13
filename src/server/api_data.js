@@ -5,7 +5,7 @@ const weatherbitKey = function() {
 }
 
 const pixabayKey = function() {
-    const key = "21396302-acfd49eefb4f...";
+    const key = "21396302-acfd49eefb4f7...";
 
     return key;
 }

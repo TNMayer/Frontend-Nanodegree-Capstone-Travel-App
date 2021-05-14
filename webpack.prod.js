@@ -26,7 +26,7 @@ module.exports = {
             forOf: false,
             // The environment supports ECMAScript Module syntax to import ECMAScript modules (import ... from '...').
             module: false,
-          }
+        }
     },
     target: ['web', 'es5'],
     module: {
